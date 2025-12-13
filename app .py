@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
+import gdown
 import os
 import matplotlib.pyplot as plt
 
@@ -11,15 +12,25 @@ st.title("SmartFraud Classifer System")
 st.write("This system predicts whether a credit card transaction is *Legitimate* or *Fraudulent* using Tree-based Machine Learning Models.")
 st.markdown("---")
 
+FILE_ID = "1BPcVzWYi7uL1VkmNjP_wqHJlWVAsypE6"
+DATA_PATH = "creditcard.csv"
+
+if not os.path.exists(DATA_PATH):
+    gdown.download(
+        f"https://drive.google.com/uc?id={FILE_ID}",
+        DATA_PATH,
+        quiet=False
+    )
+
 try:
-    data = pd.read_csv("creditcard.csv")
+    data = pd.read_csv(DATA_PATH)
     features = [col for col in data.columns if col.lower() != "class"]
     expected_len = len(features)
     st.success(f"Loaded dataset successfully with {expected_len} features.")
 except Exception as e:
-    st.error("Unable to load creditcard.csv. Please ensure it's in the same folder.")
+    st.error(f"Unable to load dataset: {e}")
     st.stop()
-
+    
 models = {}
 metrics = {}
 
@@ -125,3 +136,4 @@ if st.button("Predict Transaction Status"):
 
 st.markdown("---")
 st.caption("Developed by E2Group | SmartFraud Classifier | Streamlit Deployment © 2025")
+
